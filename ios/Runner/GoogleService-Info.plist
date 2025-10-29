@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyAdxcOWxlWwtCjUH1a7C3916FaEB8Lqnho</string>
+	<key>GCM_SENDER_ID</key>
+	<string>583846109360</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.bibliostore</string>
+	<key>PROJECT_ID</key>
+	<string>bibliostore-b5d38</string>
+	<key>STORAGE_BUCKET</key>
+	<string>bibliostore-b5d38.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:583846109360:ios:4f6fbf911e5b9e95971b75</string>
+	<key>DATABASE_URL</key>
+	<string>https://bibliostore-b5d38.firebaseio.com</string>
+</dict>
+</plist>

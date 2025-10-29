@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "583846109360",
+    "firebase_url": "https://bibliostore-b5d38.firebaseio.com",
+    "project_id": "bibliostore-b5d38",
+    "storage_bucket": "bibliostore-b5d38.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583846109360:android:25d417c98fc55452971b75",
+        "android_client_info": {
+          "package_name": "com.example.bibliostore"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWmhvF7S8Iucl7K1CR19FEalGC4yrvquE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
