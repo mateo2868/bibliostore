@@ -1,128 +1,78 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
-void main() {
+// Handler para notificaciones cuando la app está en segundo plano
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print("📩 Notificación recibida en segundo plano: ${message.notification?.title}");
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   runApp(const BiblioStoreApp());
 }
 
-class BiblioStoreApp extends StatelessWidget {
+class BiblioStoreApp extends StatefulWidget {
   const BiblioStoreApp({super.key});
+
+  @override
+  State<BiblioStoreApp> createState() => _BiblioStoreAppState();
+}
+
+class _BiblioStoreAppState extends State<BiblioStoreApp> {
+  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  String? _token;
+
+  @override
+  void initState() {
+    super.initState();
+    _initNotifications();
+  }
+
+  Future<void> _initNotifications() async {
+    // Solicitar permisos (Android 13+)
+    await _messaging.requestPermission();
+
+    // Obtener el token del dispositivo
+    _token = await _messaging.getToken();
+    print("🔑 Token del dispositivo: $_token");
+
+    // Escuchar notificaciones cuando la app está abierta
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      final notification = message.notification;
+      if (notification != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('📢 ${notification.title}: ${notification.body}')),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BiblioStore 📚',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const BooksScreen(),
-    );
-  }
-}
-
-// Modelo de libro
-class Book {
-  final String titulo;
-  final String editorial;
-  final String isbn;
-  final int existencia;
-  final String? prestadoA;
-
-  Book({
-    required this.titulo,
-    required this.editorial,
-    required this.isbn,
-    required this.existencia,
-    this.prestadoA,
-  });
-}
-
-// Lista de libros quemados (mock)
-final List<Book> books = [
-  Book(
-    titulo: 'Aprendiendo PHP',
-    editorial: 'Mateo',
-    isbn: '123456',
-    existencia: 5,
-    prestadoA: 'Mateo Arango',
-  ),
-  Book(
-    titulo: 'Flutter para principiantes',
-    editorial: 'OpenAI Press',
-    isbn: '789101',
-    existencia: 3,
-  ),
-  Book(
-    titulo: 'Clean Code',
-    editorial: 'Prentice Hall',
-    isbn: '112233',
-    existencia: 2,
-    prestadoA: 'Juan Pérez',
-  ),
-  Book(
-    titulo: 'Patrones de Diseño',
-    editorial: 'TechEd',
-    isbn: '445566',
-    existencia: 10,
-  ),
-];
-
-class BooksScreen extends StatelessWidget {
-  const BooksScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('📚 BiblioStore - Libros'),
-        backgroundColor: Colors.deepPurple,
-        foregroundColor: Colors.white,
-      ),
-      body: ListView.builder(
-        itemCount: books.length,
-        itemBuilder: (context, index) {
-          final book = books[index];
-          return Card(
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: ListTile(
-              leading: const Icon(Icons.menu_book, color: Colors.deepPurple),
-              title: Text(
-                book.titulo,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+      title: 'Bibliostore - Notificaciones',
+      theme: ThemeData(primarySwatch: Colors.deepPurple),
+      home: Scaffold(
+        appBar: AppBar(title: const Text('📚 Notificaciones FCM')),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Esperando notificaciones...',
+                style: TextStyle(fontSize: 18),
               ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Editorial: ${book.editorial}'),
-                  Text('ISBN: ${book.isbn}'),
-                  Text('Existencias: ${book.existencia}'),
-                  if (book.prestadoA != null)
-                    Text(
-                      'Prestado a: ${book.prestadoA}',
-                      style: const TextStyle(color: Colors.redAccent),
-                    ),
-                ],
-              ),
-              trailing: Icon(
-                book.prestadoA != null ? Icons.lock : Icons.check_circle,
-                color: book.prestadoA != null ? Colors.redAccent : Colors.green,
-              ),
-            ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Agregar libro próximamente...')),
-          );
-        },
-        backgroundColor: Colors.deepPurple,
-        child: const Icon(Icons.add),
+              const SizedBox(height: 20),
+              SelectableText('Token: $_token'),
+            ],
+          ),
+        ),
       ),
     );
   }
